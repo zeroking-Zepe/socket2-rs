@@ -42,7 +42,7 @@ const SD_SEND: c_int = 1;
 const SIO_KEEPALIVE_VALS: DWORD = 0x98000004;
 const WSA_FLAG_OVERLAPPED: DWORD = 0x01;
 
-pub use winapi::ctypes::c_int;
+pub use winapi::ctypes::{c_int, c_uint};
 
 // Used in `Domain`.
 pub(crate) use winapi::shared::ws2def::{AF_INET, AF_INET6};
@@ -430,6 +430,16 @@ impl Socket {
 
     pub fn set_ttl(&self, ttl: u32) -> io::Result<()> {
         unsafe { self.setsockopt(IPPROTO_IP, IP_TTL, ttl as c_int) }
+    }
+
+    #[cfg(feature = "all")]
+    pub fn set_bound_interface(&self, _if_index: c_uint) -> io::Result<()> {
+        unimplemented!()
+    }
+
+    #[cfg(feature = "all")]
+    pub fn set_bound_interface_v6(&self, _if_index: c_uint) -> io::Result<()> {
+        unimplemented!()
     }
 
     pub fn unicast_hops_v6(&self) -> io::Result<u32> {

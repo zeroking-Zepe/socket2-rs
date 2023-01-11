@@ -368,6 +368,22 @@ impl Socket {
         self.inner.set_ttl(ttl)
     }
 
+    /// Set the value of IP_BOUND_IF option on this socket.
+    ///
+    /// See libc::if_nametoindex on mapping interface name to interface index.
+    #[cfg(all(feature = "all", not(target_os = "redox")))]
+    pub fn set_bound_interface(&self, if_index: sys::c_uint) -> io::Result<()> {
+        self.inner.set_bound_interface(if_index)
+    }
+
+    /// Set the value of IPV6_BOUND_IF option on this socket.
+    ///
+    /// See libc::if_nametoindex on mapping interface name to interface index.
+    #[cfg(all(feature = "all", not(target_os = "redox")))]
+    pub fn set_bound_interface_v6(&self, if_index: sys::c_uint) -> io::Result<()> {
+        self.inner.set_bound_interface_v6(if_index)
+    }
+
     /// Gets the value of the `IPV6_UNICAST_HOPS` option for this socket.
     ///
     /// Specifies the hop limit for ipv6 unicast packets
