@@ -542,14 +542,26 @@ impl Socket {
         unsafe { self.setsockopt(libc::IPPROTO_IP, libc::IP_TTL, ttl as c_int) }
     }
 
+    #[cfg(target_vendor = "apple")]
     pub fn set_bound_interface(&self, if_index: libc::c_uint) -> io::Result<()> {
         const IP_BOUND_IF: libc::c_int = 25;
         unsafe { self.setsockopt(libc::IPPROTO_IP, IP_BOUND_IF, if_index) }
     }
 
+    #[cfg(all(feature = "all", not(target_vendor = "apple")))]
+    pub fn set_bound_interface(&self, _if_index: libc::c_uint) -> io::Result<()> {
+        unimplemented!()
+    }
+
+    #[cfg(target_vendor = "apple")]
     pub fn set_bound_interface_v6(&self, if_index: libc::c_uint) -> io::Result<()> {
         const IPV6_BOUND_IF: libc::c_int = 125;
         unsafe { self.setsockopt(libc::IPPROTO_IPV6, IPV6_BOUND_IF, if_index) }
+    }
+
+    #[cfg(all(feature = "all", not(target_vendor = "apple")))]
+    pub fn set_bound_interface_v6(&self, _if_index: libc::c_uint) -> io::Result<()> {
+        unimplemented!()
     }
 
     pub fn unicast_hops_v6(&self) -> io::Result<u32> {
